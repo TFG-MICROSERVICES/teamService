@@ -3,14 +3,20 @@ import { generateError } from '../../utils/generateError.js';
 
 export const createTeam = async (data) => {
     try{
-        console.log(data);
+
+        const existTeam = await getTeamByName(data.name);
+
+        if(existTeam) generateError('This teams name just already exists')
 
         const lastTeam = await Team.findOne({
             order: [
                 ['team_id','DESC']
             ]
         });
-        data.team_id = 't-' + lastTeam.id;
+
+        data.team_id = lastTeam
+            ? `t-${parseInt(lastTeam.team_id.split('-')[1]) + 1}` //Increment the last ID
+            : 't-1'; // First Team
 
         const team = await Team.create(data);
 
@@ -20,7 +26,7 @@ export const createTeam = async (data) => {
 
         return newTeam;
     }catch(error){
-        next(error);
+        generateError(error.message,error.status);
     }
 }
 
@@ -30,13 +36,13 @@ export const getTeams = async () =>{
 
         return teams;
     }catch(error){
-        next(error);
+        generateError(error.message,error.status);
     }
 }
 
 export const getTeamById = async (teamId) =>{
     try{
-        const team = await Team.find({
+        const team = await Team.findOne({
             where:{
                 team_id: teamId
             }
@@ -46,7 +52,21 @@ export const getTeamById = async (teamId) =>{
 
         return team;
     }catch(error){
-        next(error);
+        generateError(error.message,error.status);
+    }
+}
+
+export const getTeamByName = async (teamName) =>{
+    try{
+        const team = await Team.findOne({
+            where:{
+                name: teamName
+            }
+        });
+
+        return team ? team : null;
+    }catch(error){
+        generateError(error.message,error.status);
     }
 }
 
@@ -65,9 +85,11 @@ export const updateTeam = async (teamId,data) =>{
 
         if(!team) generateError('Team cannot be updated',500);
 
-        return team;
+        const teamUpdate = await getTeamById(teamId);
+
+        return teamUpdate;
     }catch(error){
-        next(error);
+        generateError(error.message,error.status);
     }
 }
 
@@ -87,6 +109,6 @@ export const deleteTeam = async (teamId) =>{
 
         return team;
     }catch(error){
-        next(error);
+        generateError(error.message,error.status);
     }
 }

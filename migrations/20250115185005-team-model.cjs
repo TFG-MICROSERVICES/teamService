@@ -18,8 +18,19 @@ module.exports = {
       name:{
         type: Sequelize.STRING,
         max: 255,
-        allowNull: false
+        allowNull: false,
+        unique: true,
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      }
     });
   },
 

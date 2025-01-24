@@ -11,12 +11,10 @@ module.exports = {
       user_email: {
         type: Sequelize.STRING,
         max: 255,
-        allowNull: false,
         primaryKey: true,
       },
       team_id: {
         type: Sequelize.STRING,
-        allowNull: false,
         primaryKey: true,
         references: {
           model: 'Teams',
@@ -24,6 +22,16 @@ module.exports = {
         },
         onDelete: 'CASCADE',
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      }
     });
   },
 

@@ -7,3 +7,10 @@ export const teamSchema = Joi.object({
         'string.max': 'name must be at most 255 characters'
     }),
 });
+
+export const updateSchema = Joi.object({
+    name: Joi.string().max(255).allow('',null).messages({
+        'string.base': 'name must be a string',
+        'string.max': 'name must be at most 255 characters'
+    })
+})

@@ -6,18 +6,19 @@ import {
     updateTeamController,
     deleteTeamController
 } from '../controllers/teamControllers.js';
+import { validateApiKey } from '../middlewares/validateApiKey.js';
 
 const router = express.Router();
 
-router.post('/', createTeamController);
+router.post('/',validateApiKey, createTeamController);
 
-router.get('/', getTeamsController);
+router.get('/', validateApiKey, getTeamsController);
 
-router.get('/:id', getTeamByIdController);
+router.get('/:id', validateApiKey, getTeamByIdController);
 
-router.put('/:id', updateTeamController);
+router.put('/:id', validateApiKey, updateTeamController);
 
-router.delete('/:id', deleteTeamController);
+router.delete('/:id', validateApiKey, deleteTeamController);
 
 
 export default router;
