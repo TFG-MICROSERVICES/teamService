@@ -1,114 +1,110 @@
-import { Team } from '../../models/team.js';
-import { generateError } from '../../utils/generateError.js';
+import { Team } from "../../models/team.js";
+import { generateError } from "../../utils/generateError.js";
 
 export const createTeam = async (data) => {
-    try{
+  try {
+    const existTeam = await getTeamByName(data.name);
 
-        const existTeam = await getTeamByName(data.name);
+    if (existTeam) generateError("This teams name just already exists");
 
-        if(existTeam) generateError('This teams name just already exists')
+    const lastTeam = await Team.findOne({
+      order: [["team_id", "DESC"]],
+    });
 
-        const lastTeam = await Team.findOne({
-            order: [
-                ['team_id','DESC']
-            ]
-        });
+    data.team_id = lastTeam
+      ? `t-${parseInt(lastTeam.team_id.split("-")[1]) + 1}`
+      : "t-1";
 
-        data.team_id = lastTeam
-            ? `t-${parseInt(lastTeam.team_id.split('-')[1]) + 1}` //Increment the last ID
-            : 't-1'; // First Team
+    const team = await Team.create(data);
 
-        const team = await Team.create(data);
+    if (!team) generateError("Error creating new team", 500);
 
-        if(!team) generateError('Error creating new team', 500);
+    const newTeam = await getTeamById(team.team_id);
 
-        const newTeam = await getTeamById(team.team_id);
+    return newTeam;
+  } catch (error) {
+    generateError(error.message, error.status);
+  }
+};
 
-        return newTeam;
-    }catch(error){
-        generateError(error.message,error.status);
-    }
-}
+export const getTeams = async () => {
+  try {
+    const teams = await Team.findAll();
 
-export const getTeams = async () =>{
-    try{
-        const teams = await Team.findAll();
+    return teams;
+  } catch (error) {
+    generateError(error.message, error.status);
+  }
+};
 
-        return teams;
-    }catch(error){
-        generateError(error.message,error.status);
-    }
-}
+export const getTeamById = async (teamId) => {
+  try {
+    const team = await Team.findOne({
+      where: {
+        team_id: teamId,
+      },
+    });
 
-export const getTeamById = async (teamId) =>{
-    try{
-        const team = await Team.findOne({
-            where:{
-                team_id: teamId
-            }
-        });
+    if (!team) generateError("Team with this id,it doent exist", 404);
 
-        if(!team) generateError('Team with this id,it doent exist',404);
+    return team;
+  } catch (error) {
+    generateError(error.message, error.status);
+  }
+};
 
-        return team;
-    }catch(error){
-        generateError(error.message,error.status);
-    }
-}
+export const getTeamByName = async (teamName) => {
+  try {
+    const team = await Team.findOne({
+      where: {
+        name: teamName,
+      },
+    });
 
-export const getTeamByName = async (teamName) =>{
-    try{
-        const team = await Team.findOne({
-            where:{
-                name: teamName
-            }
-        });
+    return team ? team : null;
+  } catch (error) {
+    generateError(error.message, error.status);
+  }
+};
 
-        return team ? team : null;
-    }catch(error){
-        generateError(error.message,error.status);
-    }
-}
+export const updateTeam = async (teamId, data) => {
+  try {
+    const teamExists = await getTeamById(teamId);
 
-export const updateTeam = async (teamId,data) =>{
-    try{
+    if (!teamExists) generateError("Team with this id,it doent exist", 404);
 
-        const teamExists = await getTeamById(teamId);
+    const team = await Team.update(data, {
+      where: {
+        team_id: teamId,
+      },
+    });
 
-        if(!teamExists) generateError('Team with this id,it doent exist',404);
+    if (!team) generateError("Team cannot be updated", 500);
 
-        const team = await Team.update(data,{
-            where:{
-                team_id: teamId
-            }
-        });
+    const teamUpdate = await getTeamById(teamId);
 
-        if(!team) generateError('Team cannot be updated',500);
+    return teamUpdate;
+  } catch (error) {
+    generateError(error.message, error.status);
+  }
+};
 
-        const teamUpdate = await getTeamById(teamId);
+export const deleteTeam = async (teamId) => {
+  try {
+    const teamExists = await getTeamById(teamId);
 
-        return teamUpdate;
-    }catch(error){
-        generateError(error.message,error.status);
-    }
-}
+    if (!teamExists) generateError("Team with this id,it doent exist", 404);
 
-export const deleteTeam = async (teamId) =>{
-    try{
-        const teamExists = await getTeamById(teamId);
+    const team = await Team.destroy({
+      where: {
+        team_id: teamId,
+      },
+    });
 
-        if(!teamExists) generateError('Team with this id,it doent exist',404);
+    if (!team) generateError("Team cannot be deleted", 500);
 
-        const team = await Team.destroy({
-            where:{
-                team_id: teamId
-            }
-        });
-
-        if(!team) generateError('Team cannot be deleted',500);
-
-        return team;
-    }catch(error){
-        generateError(error.message,error.status);
-    }
-}
+    return team;
+  } catch (error) {
+    generateError(error.message, error.status);
+  }
+};

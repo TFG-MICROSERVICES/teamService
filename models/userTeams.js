@@ -1,18 +1,18 @@
 import { DataTypes } from "sequelize";
 import database from "../db/database.js";
 
-export const SportTeams = database.define(
-  "sport_team",
+export const UserTeams = database.define(
+  "user_team",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
     },
-    sport_id: {
+    user_email: {
       type: DataTypes.STRING,
       max: 255,
+      unique: true,
       allowNull: false,
-      primaryKey: true,
     },
     team_id: {
       type: DataTypes.STRING,
@@ -24,8 +24,13 @@ export const SportTeams = database.define(
       },
       onDelete: "CASCADE",
     },
+    status: {
+      type: DataTypes.ENUM("0", "1"),
+      allowNull: false,
+      defaultValue: "1",
+    },
   },
   {
-    tableName: "SportTeams",
+    tableName: "UserTeams",
   }
 );
