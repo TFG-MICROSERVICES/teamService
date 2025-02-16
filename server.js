@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import database from "./db/database.js";
 import teamsRoutes from "./routes/teamRoutes.js";
-import sportTeams from "./routes/sportTeamsRoutes.js";
+import userTeams from "./routes/userTeamsRoutes.js";
 import { EventEmitter } from "events";
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(morgan("combined"));
 
 app.use("/teams", teamsRoutes);
-app.use("/sportTeams", sportTeams);
+app.use("/teams/users", userTeams);
 
 //MIDDLEWARE FOR ROUTE NOT FOUND
 app.use((req, res, next) => {

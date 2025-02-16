@@ -49,6 +49,7 @@ export const getTeamById = async (teamId) => {
 
     return team;
   } catch (error) {
+    console.log("error mas dentro", error);
     generateError(error.message, error.status);
   }
 };
@@ -93,7 +94,7 @@ export const deleteTeam = async (teamId) => {
   try {
     const teamExists = await getTeamById(teamId);
 
-    if (!teamExists) generateError("Team with this id,it doent exist", 404);
+    if (!teamExists) generateError("Team with this id doesn't exist", 404);
 
     const team = await Team.destroy({
       where: {
@@ -101,10 +102,13 @@ export const deleteTeam = async (teamId) => {
       },
     });
 
+    console.log("ELIMINADO", team);
+
     if (!team) generateError("Team cannot be deleted", 500);
 
     return team;
   } catch (error) {
+    console.log("dentro", error);
     generateError(error.message, error.status);
   }
 };

@@ -13,6 +13,7 @@ export const UserTeams = database.define(
       max: 255,
       unique: true,
       allowNull: false,
+      primaryKey: true,
     },
     team_id: {
       type: DataTypes.STRING,
@@ -25,7 +26,7 @@ export const UserTeams = database.define(
       onDelete: "CASCADE",
     },
     status: {
-      type: DataTypes.ENUM("0", "1"),
+      type: DataTypes.ENUM("0", "1", "2"),
       allowNull: false,
       defaultValue: "1",
     },

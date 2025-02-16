@@ -11,4 +11,15 @@ export const userTeamsSchema = Joi.object({
     "string.base": "Team ID must be a string.",
     "string.empty": "Team ID is required.",
   }),
+  status: Joi.valid("0", "1", "2").required().messages({
+    "any.required": "Status is required.",
+    "any.only": "Status must be one of '0', '1', or '2'.",
+  }),
+});
+
+export const updateUserTeamsSchema = Joi.object({
+  status: Joi.valid("0", "1", "2").required().messages({
+    "any.required": "Status is required.",
+    "any.only": "Status must be one of '0', '1', or '2'.",
+  }),
 });

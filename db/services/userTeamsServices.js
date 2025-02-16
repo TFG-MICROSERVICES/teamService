@@ -1,5 +1,5 @@
-import { UserTeams } from "../../models/userTeams";
-import { generateError } from "../../utils/generateError";
+import { UserTeams } from "../../models/userTeams.js";
+import { generateError } from "../../utils/generateError.js";
 
 export const createUserTeam = async (data) => {
   try {
@@ -25,16 +25,34 @@ export const getAllUserTeams = async () => {
   }
 };
 
-export const getUserTeamById = async (id) => {
+export const getUserTeamById = async (teamId) => {
   try {
     const userTeam = await UserTeams.findOne({
       where: {
-        id: id,
+        team_id: teamId,
       },
     });
 
     return userTeam;
   } catch (error) {
+    generateError(error.message, error.status);
+  }
+};
+
+export const getUserByEmail = async (userEmail, teamId) => {
+  try {
+    const user = await UserTeams.findOne({
+      where: {
+        user_email: userEmail,
+        team_id: teamId,
+      },
+    });
+
+    if (!user) generateError("User not found for this team");
+
+    return user;
+  } catch (error) {
+    console.log(error);
     generateError(error.message, error.status);
   }
 };
@@ -53,8 +71,10 @@ export const getUsersByTeamId = async (teamId) => {
   }
 };
 
-export const updateStatusByUserAndTeam = async (userEmail, teamId, status) => {
+export const updateStatusByUserAndTeam = async (userEmail, teamId, data) => {
   try {
+    console.log(userEmail);
+    const { status } = data;
     const newStatus = await UserTeams.update(
       { status },
       {
@@ -65,7 +85,9 @@ export const updateStatusByUserAndTeam = async (userEmail, teamId, status) => {
       }
     );
 
-    return newStatus;
+    const user = await getUserByEmail(userEmail, teamId);
+
+    return user;
   } catch (error) {
     generateError(error.message, error.status);
   }

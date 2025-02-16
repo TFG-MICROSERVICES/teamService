@@ -15,11 +15,20 @@ export const Team = database.define(
       unique: true,
       allowNull: false,
     },
+    sport_id: {
+      type: DataTypes.STRING,
+      max: 255,
+      allowNull: false,
+    },
     name: {
       type: DataTypes.STRING,
       max: 255,
       allowNull: false,
       unique: true,
+    },
+    public: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   },
   {
