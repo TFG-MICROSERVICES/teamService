@@ -10,7 +10,7 @@ import { validateApiKey } from '../middlewares/validateApiKey.js';
 
 const router = express.Router();
 
-router.post('/', validateApiKey, createTeamController);
+router.post('/register', validateApiKey, createTeamController);
 
 router.get('/', validateApiKey, getTeamsController);
 
