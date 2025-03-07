@@ -11,7 +11,7 @@ export const createTeamController = async (req, res, next) => {
         const team = await createTeam(validate);
 
         res.status(201).json({
-            message: 'Team created successfully',
+            message: 'Equipo creado correctamente',
             team,
         });
     } catch (error) {
@@ -21,10 +21,11 @@ export const createTeamController = async (req, res, next) => {
 
 export const getTeamsController = async (req, res, next) => {
     try {
-        const teams = await getTeams();
+        const { search } = req.query;
+        const teams = await getTeams(search);
 
         res.status(200).json({
-            message: 'Teams retrieves successfully',
+            message: 'Equipos encontrados',
             data: {
                 count: teams.length,
                 teams,
@@ -37,14 +38,14 @@ export const getTeamsController = async (req, res, next) => {
 
 export const getTeamByIdController = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { team_id } = req.params;
 
-        if (!id) generateError('The ID of the team is necessary');
+        if (!team_id) generateError('El ID del equipo es necesario');
 
-        const team = await getTeamById(id);
+        const team = await getTeamById(team_id);
 
         res.status(200).json({
-            message: 'Team found',
+            message: 'Equipo encontrado',
             team,
         });
     } catch (error) {
@@ -54,18 +55,18 @@ export const getTeamByIdController = async (req, res, next) => {
 
 export const updateTeamController = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { team_id } = req.params;
 
-        if (!id) generateError('The ID of the team is necessary to update');
+        if (!team_id) generateError('El ID del equipo es necesario para actualizar');
 
         const validate = await updateSchema.validateAsync(req.body, {
             stripUnknown: true,
         });
 
-        const team = await updateTeam(id, validate);
+        const team = await updateTeam(team_id, validate);
 
         res.status(200).json({
-            message: 'Team updated successfully',
+            message: 'Equipo actualizado correctamente',
             team,
         });
     } catch (error) {
@@ -75,12 +76,14 @@ export const updateTeamController = async (req, res, next) => {
 
 export const deleteTeamController = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { team_id } = req.params;
 
-        await deleteTeam(id);
+        console.log('team_id', team_id);
+
+        await deleteTeam(team_id);
 
         res.status(200).json({
-            message: 'Team deleted successfully',
+            message: 'Equipo eliminado correctamente',
         });
     } catch (error) {
         next(error);

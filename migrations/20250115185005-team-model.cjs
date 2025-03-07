@@ -9,12 +9,6 @@ module.exports = {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            team_id: {
-                type: Sequelize.STRING,
-                max: 255,
-                unique: true,
-                allowNull: false,
-            },
             name: {
                 type: Sequelize.STRING,
                 max: 255,

@@ -14,11 +14,11 @@ module.exports = {
                 primaryKey: true,
             },
             team_id: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
                 primaryKey: true,
                 references: {
                     model: 'Teams',
-                    key: 'team_id',
+                    key: 'id',
                 },
                 onDelete: 'CASCADE',
             },

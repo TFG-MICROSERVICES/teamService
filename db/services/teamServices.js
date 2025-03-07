@@ -1,23 +1,17 @@
 import { Team } from '../../models/team.js';
 import { generateError } from '../../utils/generateError.js';
-
+import { Op } from 'sequelize';
 export const createTeam = async (data) => {
     try {
         const existTeam = await getTeamByName(data.name);
 
-        if (existTeam) generateError('This teams name just already exists');
-
-        const lastTeam = await Team.findOne({
-            order: [['team_id', 'DESC']],
-        });
-
-        data.team_id = lastTeam ? `t-${parseInt(lastTeam.team_id.split('-')[1]) + 1}` : 't-1';
+        if (existTeam) generateError('Este nombre de equipo ya existe');
 
         const team = await Team.create(data);
 
-        if (!team) generateError('Error creating new team', 500);
+        if (!team) generateError('Error al crear el equipo', 500);
 
-        const newTeam = await getTeamById(team.team_id);
+        const newTeam = await getTeamById(team.id);
 
         return newTeam;
     } catch (error) {
@@ -25,9 +19,17 @@ export const createTeam = async (data) => {
     }
 };
 
-export const getTeams = async () => {
+export const getTeams = async (search) => {
     try {
-        const teams = await Team.findAll();
+        const teams = await Team.findAll({
+            where: search
+                ? {
+                      [Op.or]: [{ name: { [Op.like]: `%${search}%` } }],
+                  }
+                : {},
+        });
+
+        console.log('teams', teams);
 
         return teams;
     } catch (error) {
@@ -37,11 +39,7 @@ export const getTeams = async () => {
 
 export const getTeamById = async (teamId) => {
     try {
-        const team = await Team.findOne({
-            where: {
-                team_id: teamId,
-            },
-        });
+        const team = await Team.findByPk(teamId);
 
         if (!team) generateError('Team with this id,it doent exist', 404);
 
@@ -70,20 +68,21 @@ export const updateTeam = async (teamId, data) => {
     try {
         const teamExists = await getTeamById(teamId);
 
-        if (!teamExists) generateError('Team with this id,it doent exist', 404);
+        if (!teamExists) generateError('El equipo no existe', 404);
 
         const team = await Team.update(data, {
             where: {
-                team_id: teamId,
+                id: teamId,
             },
         });
 
-        if (!team) generateError('Team cannot be updated', 500);
+        if (!team) generateError('El equipo no se puede actualizar', 500);
 
         const teamUpdate = await getTeamById(teamId);
 
         return teamUpdate;
     } catch (error) {
+        console.log('error', error);
         generateError(error.message, error.status);
     }
 };
@@ -92,17 +91,17 @@ export const deleteTeam = async (teamId) => {
     try {
         const teamExists = await getTeamById(teamId);
 
-        if (!teamExists) generateError("Team with this id doesn't exist", 404);
+        if (!teamExists) generateError('El equipo no se puede eliminar porque no existe', 404);
 
         const team = await Team.destroy({
             where: {
-                team_id: teamId,
+                id: teamId,
             },
         });
 
         console.log('ELIMINADO', team);
 
-        if (!team) generateError('Team cannot be deleted', 500);
+        if (!team) generateError('El equipo no se puede eliminar', 500);
 
         return team;
     } catch (error) {

@@ -14,10 +14,10 @@ router.post('/register', validateApiKey, createTeamController);
 
 router.get('/', validateApiKey, getTeamsController);
 
-router.get('/:id', validateApiKey, getTeamByIdController);
+router.get('/:team_id', validateApiKey, getTeamByIdController);
 
-router.put('/:id', validateApiKey, updateTeamController);
+router.put('/:team_id', validateApiKey, updateTeamController);
 
-router.delete('/:id', validateApiKey, deleteTeamController);
+router.delete('/:team_id', validateApiKey, deleteTeamController);
 
 export default router;

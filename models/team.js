@@ -9,12 +9,6 @@ export const Team = database.define(
             autoIncrement: true,
             primaryKey: true,
         },
-        team_id: {
-            type: DataTypes.STRING,
-            max: 255,
-            unique: true,
-            allowNull: false,
-        },
         sport_id: {
             type: DataTypes.STRING,
             max: 255,

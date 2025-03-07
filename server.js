@@ -15,8 +15,8 @@ EventEmitter.defaultMaxListeners = 30;
 app.use(express.json());
 app.use(morgan('combined'));
 
-app.use('/teams', teamsRoutes);
-app.use('/teams/users', userTeams);
+app.use('/team', teamsRoutes);
+app.use('/team/user', userTeams);
 
 //MIDDLEWARE FOR ROUTE NOT FOUND
 app.use((req, res, next) => {
