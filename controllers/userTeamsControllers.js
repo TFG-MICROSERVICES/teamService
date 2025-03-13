@@ -11,7 +11,7 @@ export const createUserTeamController = async (req, res, next) => {
 
         res.status(201).json({
             status: 201,
-            message: 'User added to the team successfully',
+            message: 'Usuario añadido al equipo correctamente',
             newUserTeam,
         });
     } catch (error) {
@@ -26,7 +26,7 @@ export const getAllUserTeamsController = async (req, res, next) => {
 
         res.status(200).json({
             sttus: 200,
-            message: 'Users found successfully',
+            message: 'Usuarios encontrados correctamente',
             usersTeams,
         });
     } catch (error) {
@@ -43,7 +43,7 @@ export const getUsersByTeamIdController = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            message: 'User found for this team',
+            message: 'Usuario encontrado para este equipo',
             usersTeam,
         });
     } catch (error) {
@@ -64,7 +64,7 @@ export const updateStatusByUserAndTeamController = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            message: 'Status updated successfully',
+            message: 'Estado actualizado correctamente',
             newStatus,
         });
     } catch (error) {

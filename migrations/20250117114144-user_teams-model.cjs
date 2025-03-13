@@ -8,19 +8,21 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
             },
-            user_email: {
-                type: Sequelize.STRING,
-                max: 255,
+            user_id: {
+                type: Sequelize.INTEGER,
                 primaryKey: true,
             },
             team_id: {
                 type: Sequelize.INTEGER,
-                primaryKey: true,
                 references: {
                     model: 'Teams',
                     key: 'id',
                 },
                 onDelete: 'CASCADE',
+            },
+            sport_id: {
+                type: Sequelize.INTEGER,
+                primaryKey: true,
             },
             status: {
                 type: Sequelize.ENUM('0', '1'),

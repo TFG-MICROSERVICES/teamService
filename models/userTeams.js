@@ -8,22 +8,21 @@ export const UserTeams = database.define(
             type: DataTypes.INTEGER,
             autoIncrement: true,
         },
-        user_email: {
-            type: DataTypes.STRING,
-            max: 255,
-            unique: true,
-            allowNull: false,
+        user_id: {
+            type: DataTypes.INTEGER,
             primaryKey: true,
         },
         team_id: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            primaryKey: true,
+            type: DataTypes.INTEGER,
             references: {
                 model: 'Teams',
-                key: 'team_id',
+                key: 'id',
             },
             onDelete: 'CASCADE',
+        },
+        sport_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
         },
         status: {
             type: DataTypes.ENUM('0', '1', '2'),

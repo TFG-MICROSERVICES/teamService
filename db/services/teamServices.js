@@ -1,6 +1,8 @@
 import { Team } from '../../models/team.js';
+import { UserTeams } from '../../models/userTeams.js';
 import { generateError } from '../../utils/generateError.js';
 import { Op } from 'sequelize';
+
 export const createTeam = async (data) => {
     try {
         const existTeam = await getTeamByName(data.name);
@@ -22,14 +24,18 @@ export const createTeam = async (data) => {
 export const getTeams = async (search) => {
     try {
         const teams = await Team.findAll({
+            include: [
+                {
+                    model: UserTeams,
+                    attributes: ['user_id', 'status', 'createdAt', 'updatedAt'],
+                },
+            ],
             where: search
                 ? {
                       [Op.or]: [{ name: { [Op.like]: `%${search}%` } }],
                   }
                 : {},
         });
-
-        console.log('teams', teams);
 
         return teams;
     } catch (error) {
