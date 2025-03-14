@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import database from '../db/database.js';
 import { UserTeams } from './userTeams.js';
+import { RequestTeams } from './requestTeams.js';
 export const Team = database.define(
     'team',
     {
@@ -32,3 +33,6 @@ export const Team = database.define(
 
 Team.hasMany(UserTeams, { foreignKey: 'team_id', sourceKey: 'id' });
 UserTeams.belongsTo(Team, { foreignKey: 'team_id', targetKey: 'id' });
+
+Team.hasMany(RequestTeams, { foreignKey: 'team_id', sourceKey: 'id' });
+RequestTeams.belongsTo(Team, { foreignKey: 'team_id', targetKey: 'id' });

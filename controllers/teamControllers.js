@@ -59,9 +59,13 @@ export const updateTeamController = async (req, res, next) => {
 
         if (!team_id) generateError('El ID del equipo es necesario para actualizar');
 
+        console.log('req.body', req.body);
+
         const validate = await updateSchema.validateAsync(req.body, {
             stripUnknown: true,
         });
+
+        console.log('validate', validate);
 
         const team = await updateTeam(team_id, validate);
 

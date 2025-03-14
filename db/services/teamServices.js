@@ -1,5 +1,6 @@
 import { Team } from '../../models/team.js';
 import { UserTeams } from '../../models/userTeams.js';
+import { RequestTeams } from '../../models/requestTeams.js';
 import { generateError } from '../../utils/generateError.js';
 import { Op } from 'sequelize';
 
@@ -27,9 +28,21 @@ export const getTeams = async (search) => {
             include: [
                 {
                     model: UserTeams,
-                    attributes: ['user_id', 'status', 'createdAt', 'updatedAt'],
+                    attributes: ['user_id', 'status', 'id'],
+                },
+                {
+                    model: RequestTeams,
+                    attributes: ['user_id', 'status', 'id', 'description'],
+                    where: {
+                        status: '0',
+                    },
+                    order: [['createdAt', 'DESC']],
+                    required: false,
                 },
             ],
+            attributes: {
+                exclude: ['createdAt', 'updatedAt'],
+            },
             where: search
                 ? {
                       [Op.or]: [{ name: { [Op.like]: `%${search}%` } }],
@@ -45,7 +58,28 @@ export const getTeams = async (search) => {
 
 export const getTeamById = async (teamId) => {
     try {
-        const team = await Team.findByPk(teamId);
+        const team = await Team.findByPk(teamId, {
+            include: [
+                {
+                    model: UserTeams,
+                    attributes: ['user_id', 'status', 'id'],
+                    where: {
+                        status: '1',
+                    },
+                    order: [['createdAt', 'DESC']],
+                    required: false,
+                },
+                {
+                    model: RequestTeams,
+                    attributes: ['user_id', 'status', 'id', 'description'],
+                    where: {
+                        status: '0',
+                    },
+                    order: [['createdAt', 'DESC']],
+                    required: false,
+                },
+            ],
+        });
 
         if (!team) generateError('Team with this id,it doent exist', 404);
 

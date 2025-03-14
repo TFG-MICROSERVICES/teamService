@@ -23,4 +23,7 @@ export const updateSchema = Joi.object({
         'string.base': 'El nombre debe ser una cadena',
         'string.max': 'El nombre debe tener máximo 255 caracteres',
     }),
+    public: Joi.boolean().allow(null, true, false).messages({
+        'boolean.base': 'El campo público debe ser un booleano',
+    }),
 });
