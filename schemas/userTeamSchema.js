@@ -1,10 +1,10 @@
 import Joi from 'joi';
 
 export const userTeamsSchema = Joi.object({
-    user_id: Joi.number().required().messages({
-        'number.base': 'User ID must be a number.',
-        'number.empty': 'User ID is required.',
-        'number.required': 'User ID is required.',
+    user_email: Joi.string().required().messages({
+        'string.base': 'User email must be a string.',
+        'string.empty': 'User email is required.',
+        'string.required': 'User email is required.',
     }),
     team_id: Joi.number().required().messages({
         'number.base': 'Team ID must be a number.',

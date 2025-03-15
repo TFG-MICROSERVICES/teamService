@@ -22,17 +22,17 @@ export const createTeam = async (data) => {
     }
 };
 
-export const getTeams = async (search) => {
+export const getTeams = async (search, sport_id) => {
     try {
         const teams = await Team.findAll({
             include: [
                 {
                     model: UserTeams,
-                    attributes: ['user_id', 'status', 'id'],
+                    attributes: ['user_email', 'status', 'id', 'is_captain'],
                 },
                 {
                     model: RequestTeams,
-                    attributes: ['user_id', 'status', 'id', 'description'],
+                    attributes: ['user_email', 'status', 'id', 'description'],
                     where: {
                         status: '0',
                     },
@@ -43,11 +43,23 @@ export const getTeams = async (search) => {
             attributes: {
                 exclude: ['createdAt', 'updatedAt'],
             },
-            where: search
-                ? {
-                      [Op.or]: [{ name: { [Op.like]: `%${search}%` } }],
-                  }
-                : {},
+            where: {
+                ...((search || sport_id) && {
+                    [Op.and]: [
+                        ...(sport_id ? [{ sport_id }] : []),
+                        ...(search
+                            ? [
+                                  {
+                                      name: {
+                                          [Op.iLike]: `%${search}%`,
+                                      },
+                                  },
+                              ]
+                            : []),
+                    ],
+                }),
+            },
+            order: [['createdAt', 'DESC']],
         });
 
         return teams;
@@ -62,7 +74,7 @@ export const getTeamById = async (teamId) => {
             include: [
                 {
                     model: UserTeams,
-                    attributes: ['user_id', 'status', 'id'],
+                    attributes: ['user_email', 'status', 'id', 'is_captain'],
                     where: {
                         status: '1',
                     },
@@ -71,7 +83,7 @@ export const getTeamById = async (teamId) => {
                 },
                 {
                     model: RequestTeams,
-                    attributes: ['user_id', 'status', 'id', 'description'],
+                    attributes: ['user_email', 'status', 'id', 'description'],
                     where: {
                         status: '0',
                     },
@@ -85,8 +97,8 @@ export const getTeamById = async (teamId) => {
 
         return team;
     } catch (error) {
-        console.log('error mas dentro', error);
-        generateError(error.message, error.status);
+        console.log('error', error);
+        throw error;
     }
 };
 
@@ -100,7 +112,8 @@ export const getTeamByName = async (teamName) => {
 
         return team ? team : null;
     } catch (error) {
-        generateError(error.message, error.status);
+        console.log('error', error);
+        throw error;
     }
 };
 
@@ -139,13 +152,11 @@ export const deleteTeam = async (teamId) => {
             },
         });
 
-        console.log('ELIMINADO', team);
-
         if (!team) generateError('El equipo no se puede eliminar', 500);
 
         return team;
     } catch (error) {
         console.log('dentro', error);
-        generateError(error.message, error.status);
+        throw error;
     }
 };

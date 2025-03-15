@@ -1,6 +1,6 @@
 import { requestTeamSchema, updateRequestTeamSchema } from '../schemas/requestTeam.js';
-import { createRequestTeam, updateRequestById, deleteRequestById } from '../db/services/requestsTeamServices.js';
-import { getRequestTeamById } from '../db/services/requestsTeamServices.js';
+import { createRequestTeam, updateRequestById, deleteRequestById, getRequestTeamById, getRequestById } from '../db/services/requestsTeamServices.js';
+import { createUserTeam } from '../db/services/userTeamsServices.js';
 import { generateError } from '../utils/generateError.js';
 
 export const createRequestTeamController = async (req, res, next) => {
@@ -46,11 +46,22 @@ export const updateRequestTeamController = async (req, res, next) => {
 
         await updateRequestById(id, validate);
 
+        const requestTeam = await getRequestById(id);
+
+        if (requestTeam.status === '1') {
+            await createUserTeam({
+                user_email: requestTeam.user_email,
+                team_id: requestTeam.team_id,
+                sport_id: requestTeam.sport_id,
+            });
+        }
+
         res.status(200).json({
             status: 200,
             message: 'Solicitud de equipo actualizada correctamente',
         });
     } catch (error) {
+        console.log(error);
         next(error);
     }
 };

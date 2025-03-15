@@ -5,13 +5,17 @@ export const createUserTeam = async (data) => {
     try {
         const userTeam = await UserTeams.create(data);
 
-        if (!userTeam) generateError('Error to add a new user for this team', 500);
+        if (!userTeam) generateError('Error al unirte a este equipo', 500);
 
         const newUserTeam = await getUserTeamById(userTeam.id);
 
         return newUserTeam;
     } catch (error) {
-        generateError(error.message, error.status);
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            generateError('Ya tienes un equipo en este deporte', 400);
+        } else {
+            throw error;
+        }
     }
 };
 
@@ -48,8 +52,6 @@ export const getUserByEmail = async (userEmail, teamId) => {
             },
         });
 
-        if (!user) generateError('User not found for this team');
-
         return user;
     } catch (error) {
         console.log(error);
@@ -73,17 +75,30 @@ export const getUsersByTeamId = async (teamId) => {
 
 export const updateStatusByUserAndTeam = async (userEmail, teamId, data) => {
     try {
-        console.log(userEmail);
         const { status } = data;
-        const newStatus = await UserTeams.update(
+        console.log('userEmail', userEmail);
+        console.log('teamId', teamId);
+        console.log('data', data);
+        const getUserTeam = await UserTeams.findOne({
+            where: {
+                user_email: userEmail,
+            },
+        });
+
+        console.log('getUserTeam', getUserTeam);
+
+        const userTeam = await UserTeams.update(
             { status },
             {
                 where: {
                     team_id: teamId,
                     user_email: userEmail,
                 },
+                logging: console.log,
             }
         );
+
+        console.log('userTeam', userTeam);
 
         const user = await getUserByEmail(userEmail, teamId);
 

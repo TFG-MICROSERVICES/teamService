@@ -8,8 +8,9 @@ export const UserTeams = database.define(
             type: DataTypes.INTEGER,
             autoIncrement: true,
         },
-        user_id: {
-            type: DataTypes.INTEGER,
+        user_email: {
+            type: DataTypes.STRING,
+            max: 255,
             primaryKey: true,
         },
         team_id: {
@@ -25,12 +26,23 @@ export const UserTeams = database.define(
             primaryKey: true,
         },
         status: {
-            type: DataTypes.ENUM('0', '1', '2'),
+            type: DataTypes.ENUM('0', '1'),
             allowNull: false,
             defaultValue: '1',
+        },
+        is_captain: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         },
     },
     {
         tableName: 'UserTeams',
+        indexes: [
+            {
+                unique: true,
+                fields: ['user_email', 'team_id', 'sport_id'],
+            },
+        ],
     }
 );

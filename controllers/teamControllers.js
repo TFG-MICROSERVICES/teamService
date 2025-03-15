@@ -1,14 +1,28 @@
 import { createTeam, getTeams, getTeamById, updateTeam, deleteTeam } from '../db/services/teamServices.js';
+import { createUserTeam } from '../db/services/userTeamsServices.js';
 import { teamSchema, updateSchema } from '../schemas/teamSchema.js';
+import { getRequestTeamById } from '../db/services/requestsTeamServices.js';
+import { updateStatusByUserAndTeam } from '../db/services/requestsTeamServices.js';
+import { updateUserTeamsSchema } from '../schemas/userTeamSchema.js';
 import { generateError } from '../utils/generateError.js';
 
 export const createTeamController = async (req, res, next) => {
     try {
+        const { user } = req.body;
         const validate = await teamSchema.validateAsync(req.body, {
             stripUnknown: true,
         });
 
         const team = await createTeam(validate);
+
+        const getTeam = await getTeamById(team.id);
+
+        await createUserTeam({
+            user_email: user.email,
+            team_id: getTeam.id,
+            sport_id: getTeam.sport_id,
+            is_captain: true,
+        });
 
         res.status(201).json({
             message: 'Equipo creado correctamente',
@@ -21,8 +35,8 @@ export const createTeamController = async (req, res, next) => {
 
 export const getTeamsController = async (req, res, next) => {
     try {
-        const { search } = req.query;
-        const teams = await getTeams(search);
+        const { search, sport_id } = req.query;
+        const teams = await getTeams(search, sport_id);
 
         res.status(200).json({
             message: 'Equipos encontrados',
@@ -59,15 +73,32 @@ export const updateTeamController = async (req, res, next) => {
 
         if (!team_id) generateError('El ID del equipo es necesario para actualizar');
 
-        console.log('req.body', req.body);
-
         const validate = await updateSchema.validateAsync(req.body, {
             stripUnknown: true,
         });
 
-        console.log('validate', validate);
-
         const team = await updateTeam(team_id, validate);
+
+        if (validate.public) {
+            const request = await getRequestTeamById(team_id);
+
+            if (request) {
+                request.map(async (request) => {
+                    const validate = await updateUserTeamsSchema.validateAsync(
+                        { status: '1' },
+                        {
+                            stripUnknown: true,
+                        }
+                    );
+                    await updateStatusByUserAndTeam(request.dataValues.user_email, team_id, validate);
+                    await createUserTeam({
+                        user_email: request.dataValues.user_email,
+                        team_id: team_id,
+                        sport_id: team.sport_id,
+                    });
+                });
+            }
+        }
 
         res.status(200).json({
             message: 'Equipo actualizado correctamente',
@@ -81,8 +112,6 @@ export const updateTeamController = async (req, res, next) => {
 export const deleteTeamController = async (req, res, next) => {
     try {
         const { team_id } = req.params;
-
-        console.log('team_id', team_id);
 
         await deleteTeam(team_id);
 

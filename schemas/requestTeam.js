@@ -5,9 +5,9 @@ export const requestTeamSchema = Joi.object({
         'any.required': 'El ID del equipo es requerido',
         'number.base': 'El ID del equipo debe ser un número',
     }),
-    user_id: Joi.number().required().messages({
-        'any.required': 'El ID del usuario es requerido',
-        'number.base': 'El ID del usuario debe ser un número',
+    user_email: Joi.string().required().messages({
+        'any.required': 'El email del usuario es requerido',
+        'string.base': 'El email del usuario debe ser una cadena',
     }),
     sport_id: Joi.number().required().messages({
         'any.required': 'El ID del deporte es requerido',

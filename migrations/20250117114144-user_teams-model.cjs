@@ -8,8 +8,9 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
             },
-            user_id: {
-                type: Sequelize.INTEGER,
+            user_email: {
+                type: Sequelize.STRING,
+                max: 255,
                 primaryKey: true,
             },
             team_id: {

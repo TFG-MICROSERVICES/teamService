@@ -3,27 +3,31 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        queryInterface.createTable('requestsTeams', {
+        queryInterface.createTable('RequestTeams', {
             id: {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
-                primaryKey: true,
             },
             team_id: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                primaryKey: true,
                 references: {
                     model: 'Teams',
                     key: 'id',
                 },
                 onDelete: 'CASCADE',
             },
-            user_id: {
+            user_email: {
+                type: Sequelize.STRING,
+                max: 255,
+                primaryKey: true,
+            },
+            sport_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
             },
             status: {
-                type: Sequelize.ENUM('0', '1', '2'),
+                type: Sequelize.ENUM('0', '1'),
                 allowNull: false,
                 defaultValue: '0',
             },
@@ -42,6 +46,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        queryInterface.dropTable('requestsTeams');
+        queryInterface.dropTable('RequestTeams');
     },
 };

@@ -11,15 +11,20 @@ export const createRequestTeam = async (data) => {
 
         return newRequestTeam;
     } catch (error) {
-        throw error;
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            generateError('Ya perteneces o has enviado una solicitud para este equipo', 400);
+        } else {
+            throw error;
+        }
     }
 };
 
 export const getRequestTeamById = async (teamId) => {
     try {
-        const requestTeam = await RequestTeams.findOne({
+        const requestTeam = await RequestTeams.findAll({
             where: {
                 team_id: teamId,
+                status: '0',
             },
         });
 
@@ -29,6 +34,19 @@ export const getRequestTeamById = async (teamId) => {
     }
 };
 
+export const getRequestById = async (id) => {
+    try {
+        const requestTeam = await RequestTeams.findOne({
+            where: {
+                id: id,
+            },
+        });
+
+        return requestTeam.dataValues;
+    } catch (error) {
+        throw error;
+    }
+};
 export const updateRequestById = async (id, data) => {
     try {
         const requestTeam = await RequestTeams.update(data, {
@@ -38,6 +56,18 @@ export const updateRequestById = async (id, data) => {
         if (!requestTeam) generateError('Error al actualizar la solicitud', 500);
 
         return true;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateStatusByUserAndTeam = async (userEmail, teamId, data) => {
+    try {
+        const requestTeam = await RequestTeams.update(data, {
+            where: { user_email: userEmail, team_id: teamId },
+        });
+
+        return requestTeam;
     } catch (error) {
         throw error;
     }

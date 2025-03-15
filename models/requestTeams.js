@@ -8,12 +8,14 @@ export const RequestTeams = database.define(
             type: DataTypes.INTEGER,
             autoIncrement: true,
         },
-        user_id: {
-            type: DataTypes.INTEGER,
+        user_email: {
+            type: DataTypes.STRING,
+            max: 255,
             primaryKey: true,
         },
         team_id: {
             type: DataTypes.INTEGER,
+            primaryKey: true,
             references: {
                 model: 'Teams',
                 key: 'id',
@@ -22,7 +24,7 @@ export const RequestTeams = database.define(
         },
         sport_id: {
             type: DataTypes.INTEGER,
-            primaryKey: true,
+            allowNull: false,
         },
         description: {
             type: DataTypes.TEXT,
