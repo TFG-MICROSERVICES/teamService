@@ -2,6 +2,7 @@ import express from 'express';
 import {
     createUserTeamController,
     getAllUserTeamsController,
+    getTeamByUserController,
     getUsersByTeamIdController,
     updateStatusByUserAndTeamController,
 } from '../controllers/userTeamsControllers.js';
@@ -13,7 +14,9 @@ router.post('/', validateApiKey, createUserTeamController);
 
 router.get('/', validateApiKey, getAllUserTeamsController);
 
-router.get('/:team_id', validateApiKey, getUsersByTeamIdController);
+router.get('/:user_email', validateApiKey, getTeamByUserController);
+
+router.get('/team/:team_id', validateApiKey, getUsersByTeamIdController);
 
 router.patch('/:user_email/:team_id', validateApiKey, updateStatusByUserAndTeamController);
 

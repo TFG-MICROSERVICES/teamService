@@ -59,6 +59,23 @@ export const getUserByEmail = async (userEmail, teamId) => {
     }
 };
 
+export const getTeamByUserService = async (userEmail) => {
+    try {
+        const team = await UserTeams.findOne({
+            where: {
+                user_email: userEmail,
+                isCaptain: true,
+            },
+        });
+
+        const data = await team.toJSON();
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getUsersByTeamId = async (teamId) => {
     try {
         const users = await UserTeams.findOne({

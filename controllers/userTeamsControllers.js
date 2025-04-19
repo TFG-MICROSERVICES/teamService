@@ -1,4 +1,11 @@
-import { createUserTeam, updateStatusByUserAndTeam, getAllUserTeams, getUsersByTeamId, getUserTeamById } from '../db/services/userTeamsServices.js';
+import {
+    createUserTeam,
+    updateStatusByUserAndTeam,
+    getAllUserTeams,
+    getUsersByTeamId,
+    getUserTeamById,
+    getTeamByUserService,
+} from '../db/services/userTeamsServices.js';
 import { updateUserTeamsSchema, userTeamsSchema } from '../schemas/userTeamSchema.js';
 
 export const createUserTeamController = async (req, res, next) => {
@@ -48,6 +55,22 @@ export const getUsersByTeamIdController = async (req, res, next) => {
         });
     } catch (error) {
         console.log(error);
+        next(error);
+    }
+};
+
+export const getTeamByUserController = async (req, res, next) => {
+    try {
+        const { user_email } = req.params;
+
+        const team = await getTeamByUserService(user_email);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Equipo del usuario encontrado correctamente',
+            data: team,
+        });
+    } catch (error) {
         next(error);
     }
 };
