@@ -117,6 +117,33 @@ export const getTeamByName = async (teamName) => {
     }
 };
 
+export const getTeamByArrayService = async (teams) => {
+    try {
+        const teamsInfo = await Team.findAll({
+            where: {
+                id: {
+                    [Op.in]: teams,
+                },
+            },
+            include: [
+                {
+                    model: UserTeams,
+                    attributes: ['user_email', 'status', 'id', 'is_captain'],
+                    where: {
+                        status: '1',
+                    },
+                    order: [['createdAt', 'DESC']],
+                    required: false,
+                },
+            ],
+        });
+
+        return teamsInfo;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const updateTeam = async (teamId, data) => {
     try {
         const teamExists = await getTeamById(teamId);

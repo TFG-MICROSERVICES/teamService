@@ -1,3 +1,4 @@
+import { Team } from '../../models/team.js';
 import { UserTeams } from '../../models/userTeams.js';
 import { generateError } from '../../utils/generateError.js';
 
@@ -59,16 +60,29 @@ export const getUserByEmail = async (userEmail, teamId) => {
     }
 };
 
-export const getTeamByUserService = async (userEmail) => {
+export const getTeamByUserService = async (userEmail, sport_id) => {
     try {
-        const team = await UserTeams.findOne({
-            where: {
-                user_email: userEmail,
-                isCaptain: true,
-            },
-        });
+        let team = null;
+        if (!sport_id) {
+            team = await UserTeams.findOne({
+                include: { model: Team, where: { sport_id: sport_id } },
+                where: {
+                    user_email: userEmail,
+                },
+            });
+        } else {
+            team = await UserTeams.findOne({
+                include: { model: Team, where: { sport_id: sport_id } },
+                where: {
+                    user_email: userEmail,
+                },
+            });
+        }
 
-        const data = await team.toJSON();
+        let data = null;
+        if (team) {
+            data = await team.toJSON();
+        }
 
         return data;
     } catch (error) {
@@ -114,8 +128,6 @@ export const updateStatusByUserAndTeam = async (userEmail, teamId, data) => {
                 logging: console.log,
             }
         );
-
-        console.log('userTeam', userTeam);
 
         const user = await getUserByEmail(userEmail, teamId);
 

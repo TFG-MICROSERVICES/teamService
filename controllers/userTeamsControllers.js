@@ -1,3 +1,4 @@
+import { getTeamByArrayService } from '../db/services/teamServices.js';
 import {
     createUserTeam,
     updateStatusByUserAndTeam,
@@ -62,8 +63,9 @@ export const getUsersByTeamIdController = async (req, res, next) => {
 export const getTeamByUserController = async (req, res, next) => {
     try {
         const { user_email } = req.params;
+        const { sport_id } = req.query;
 
-        const team = await getTeamByUserService(user_email);
+        const team = await getTeamByUserService(user_email, sport_id);
 
         res.status(200).json({
             status: 200,

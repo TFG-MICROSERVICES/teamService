@@ -1,4 +1,4 @@
-import { createTeam, getTeams, getTeamById, updateTeam, deleteTeam } from '../db/services/teamServices.js';
+import { createTeam, getTeams, getTeamById, updateTeam, deleteTeam, getTeamByArrayService } from '../db/services/teamServices.js';
 import { createUserTeam } from '../db/services/userTeamsServices.js';
 import { teamSchema, updateSchema } from '../schemas/teamSchema.js';
 import { getRequestTeamById } from '../db/services/requestsTeamServices.js';
@@ -63,6 +63,23 @@ export const getTeamByIdController = async (req, res, next) => {
             team,
         });
     } catch (error) {
+        next(error);
+    }
+};
+
+export const teamsByArrayController = async (req, res, next) => {
+    try {
+        const { data } = req.body;
+
+        const teams = await getTeamByArrayService(data.map((team) => team.team_id));
+
+        res.status(200).json({
+            status: 200,
+            message: 'Información de equipos obtenida correctamente',
+            data: teams,
+        });
+    } catch (error) {
+        console.log(error);
         next(error);
     }
 };
