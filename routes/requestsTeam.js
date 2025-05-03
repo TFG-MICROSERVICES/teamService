@@ -5,10 +5,13 @@ import { getRequestTeamByIdController, updateRequestTeamController } from '../co
 
 const router = express.Router();
 
+//GET http://localhost:3004/team/request/team/:id
 router.get('/team/:id', validateApiKey, getRequestTeamByIdController);
 
+//POST http://localhost:3004/team/request/team/
 router.post('/', validateApiKey, createRequestTeamController);
 
+//PUT http://localhost:3004/team/request/:id
 router.put('/:id', validateApiKey, updateRequestTeamController);
 
 export default router;
