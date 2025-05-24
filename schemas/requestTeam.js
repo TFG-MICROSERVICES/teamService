@@ -13,7 +13,7 @@ export const requestTeamSchema = Joi.object({
         'any.required': 'El ID del deporte es requerido',
         'number.base': 'El ID del deporte debe ser un número',
     }),
-    status: Joi.string().valid('0', '1', '2').required().messages({
+    status: Joi.string().valid('0', '1', '2').required().default('2').messages({
         'any.required': 'El estado es requerido',
         'string.base': 'El estado debe ser una cadena',
         'any.only': 'El estado debe ser 0, 1 o 2',

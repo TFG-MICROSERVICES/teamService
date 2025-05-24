@@ -25,6 +25,7 @@ export const RequestTeams = database.define(
         sport_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            primaryKey: true,
         },
         description: {
             type: DataTypes.TEXT,

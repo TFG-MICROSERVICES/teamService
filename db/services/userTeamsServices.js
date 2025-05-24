@@ -60,28 +60,33 @@ export const getUserByEmail = async (userEmail, teamId) => {
     }
 };
 
-export const getTeamByUserService = async (userEmail, sport_id) => {
+export const getTeamByUserService = async (userEmail, sport_id = null) => {
     try {
-        let team = null;
-        if (!sport_id) {
-            team = await UserTeams.findOne({
-                include: { model: Team, where: { sport_id: sport_id } },
+        let teams = null;
+        if (sport_id) {
+            teams = await UserTeams.findAll({
+                include: { 
+                    model: Team, 
+                    where: { sport_id: sport_id } 
+                },
                 where: {
                     user_email: userEmail,
                 },
             });
         } else {
-            team = await UserTeams.findOne({
-                include: { model: Team, where: { sport_id: sport_id } },
+            teams = await UserTeams.findAll({
+                include: { 
+                    model: Team 
+                },
                 where: {
                     user_email: userEmail,
                 },
             });
         }
 
-        let data = null;
-        if (team) {
-            data = await team.toJSON();
+        let data = [];
+        if (teams && teams.length > 0) {
+            data = await Promise.all(teams.map(team => team.toJSON()));
         }
 
         return data;

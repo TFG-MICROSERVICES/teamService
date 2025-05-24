@@ -2,29 +2,29 @@ import Joi from 'joi';
 
 export const userTeamsSchema = Joi.object({
     user_email: Joi.string().required().messages({
-        'string.base': 'User email must be a string.',
-        'string.empty': 'User email is required.',
-        'string.required': 'User email is required.',
+        'string.base': 'El email del usuario debe ser una cadena de texto.',
+        'string.empty': 'El email del usuario es requerido.',
+        'string.required': 'El email del usuario es requerido.',
     }),
     team_id: Joi.number().required().messages({
-        'number.base': 'Team ID must be a number.',
-        'number.empty': 'Team ID is required.',
-        'number.required': 'Team ID is required.',
+        'number.base': 'El ID del equipo debe ser un número.',
+        'number.empty': 'El ID del equipo es requerido.',
+        'number.required': 'El ID del equipo es requerido.',
     }),
     sport_id: Joi.number().required().messages({
-        'number.base': 'Sport ID must be a number.',
-        'number.empty': 'Sport ID is required.',
-        'number.required': 'Sport ID is required.',
+        'number.base': 'El ID del deporte debe ser un número.',
+        'number.empty': 'El ID del deporte es requerido.',
+        'number.required': 'El ID del deporte es requerido.',
     }),
     status: Joi.valid('0', '1', '2').default('1').required().messages({
-        'any.required': 'Estado es requerido.',
-        'any.only': "El estado debe ser uno de '0', '1', o '2'.",
+        'any.required': 'El estado es requerido.',
+        'any.only': "El estado debe ser uno de '0', '1'.",
     }),
 });
 
 export const updateUserTeamsSchema = Joi.object({
     status: Joi.valid('0', '1', '2').required().messages({
-        'any.required': 'Status is required.',
-        'any.only': "Status must be one of '0', '1', or '2'.",
+        'any.required': 'El estado es requerido.',
+        'any.only': "El estado debe ser uno de '0', '1'.",
     }),
 });
