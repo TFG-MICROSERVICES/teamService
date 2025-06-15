@@ -3,7 +3,7 @@ import { UserTeams } from '../../models/userTeams.js';
 import { generateError } from '../../utils/generateError.js';
 import { deleteTeam } from './teamServices.js';
 
-export const createUserTeam = async (data) => {
+export const createUserTeam = async (data, createTeam) => {
     try {
         const userTeam = await UserTeams.create(data);
 
@@ -11,12 +11,12 @@ export const createUserTeam = async (data) => {
 
         const newUserTeam = await getUserTeamById(userTeam.id);
 
-        console.log(data);
-
         return newUserTeam;
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            await deleteTeam(data.team_id);
+            if(createTeam){
+                await deleteTeam(data.team_id);
+            }
             generateError('Ya tienes un equipo en este deporte', 400);
         } else {
             throw error;

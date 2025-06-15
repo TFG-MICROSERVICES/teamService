@@ -22,7 +22,7 @@ export const createTeamController = async (req, res, next) => {
             team_id: getTeam.id,
             sport_id: getTeam.sport_id,
             is_captain: true,
-        });
+        },true);
 
         res.status(201).json({
             message: 'Equipo creado correctamente',
