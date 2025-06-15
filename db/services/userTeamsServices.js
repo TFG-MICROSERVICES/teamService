@@ -11,11 +11,13 @@ export const createUserTeam = async (data) => {
 
         const newUserTeam = await getUserTeamById(userTeam.id);
 
+        console.log(data);
+
         return newUserTeam;
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            generateError('Ya tienes un equipo en este deporte', 400);
             await deleteTeam(data.team_id);
+            generateError('Ya tienes un equipo en este deporte', 400);
         } else {
             throw error;
         }
