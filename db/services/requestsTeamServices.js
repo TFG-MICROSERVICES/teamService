@@ -12,6 +12,7 @@ export const createRequestTeam = async (data) => {
         return newRequestTeam;
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
+            await RequestTeams
             generateError('Ya perteneces o has enviado una solicitud para este equipo', 400);
         } else {
             throw error;

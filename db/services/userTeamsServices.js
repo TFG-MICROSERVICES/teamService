@@ -65,6 +65,7 @@ export const getUserByEmail = async (userEmail, teamId) => {
 };
 
 export const getTeamByUserService = async (userEmail, sport_id = null) => {
+    console.log(userEmail, sport_id);
     try {
         let teams = null;
         if (sport_id) {

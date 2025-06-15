@@ -1,10 +1,14 @@
 import { requestTeamSchema, updateRequestTeamSchema } from '../schemas/requestTeam.js';
 import { createRequestTeam, updateRequestById, deleteRequestById, getRequestTeamById, getRequestById } from '../db/services/requestsTeamServices.js';
-import { createUserTeam } from '../db/services/userTeamsServices.js';
+import { createUserTeam, getTeamByUserService } from '../db/services/userTeamsServices.js';
 import { generateError } from '../utils/generateError.js';
 
 export const createRequestTeamController = async (req, res, next) => {
     try {
+        const team = await getTeamByUserService(req.body.user_email,String(req.body.sport_id));
+        if(team.length > 0){
+            generateError('No se pudo hacer la solicitud porque ya tiene sun equipo en este deporte', 400);
+        }
         const validate = await requestTeamSchema.validateAsync(req.body);
 
         const requestTeam = await createRequestTeam(validate);
@@ -15,6 +19,7 @@ export const createRequestTeamController = async (req, res, next) => {
             data: requestTeam,
         });
     } catch (error) {
+        console.log(error);
         next(error);
     }
 };
